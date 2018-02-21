@@ -1,0 +1,1 @@
+add_library(cfsm cfsm.c)
