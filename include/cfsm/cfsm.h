@@ -8,6 +8,9 @@
 
 #define nullptr NULL
 
+/**
+ * CFSM STATE
+ */
 struct cfsm_state;
 
 typedef void (*cfsm_state_action_f)(struct cfsm_state * state, int event_id, void *event_data);
@@ -30,10 +33,14 @@ struct cfsm {
     struct cfsm_state *current_state;
 
     int num_states;
+    struct cfsm_state *states;
 };
 
 struct cfsm *cfsm_init(struct cfsm *fsm, int num_states, struct cfsm_state *states, struct cfsm_state *initial_state);
 
+/**
+ * CFSM TRANSITION
+ */
 struct cfsm_transition;
 
 struct cfsm_transition_list {
@@ -52,8 +59,8 @@ struct cfsm_transition {
     cfsm_guard_f guard;
 };
 
-bool cfsm_null_guard(struct cfsm_state *origin, struct cfsm_state *next, int event_id, void *event_data);
-void cfsm_null_action(struct cfsm_state *origin, struct cfsm_state *next, int event_id, void *event_data);
+bool cfsm_null_guard(struct cfsm_state *source, struct cfsm_state *target, int event_id, void *event_data);
+void cfsm_null_action(struct cfsm_state *source, struct cfsm_state *target, int event_id, void *event_data);
 
 void cfsm_add_transition(struct cfsm *fsm, struct cfsm_transition *t);
 
@@ -68,6 +75,15 @@ void cfsm_transition_set_guard(struct cfsm_transition *t, cfsm_guard_f guard);
 inline bool cfsm_transition_is_internal(struct cfsm_transition * t) {
     return t->source == t->target;
 }
+
+/**
+ * CFSM EVENT PROCESSING FUNCTIONS
+ */
+void cfsm_start(struct cfsm *fsm, int event_id, void *event_data);
+
+void cfsm_stop(struct cfsm *fsm, int event_id, void *event_data);
+
+void cfsm_restart(struct cfsm *fsm, int event_id, void *event_data);
 
 enum cfsm_status {
     cfsm_status_ok,

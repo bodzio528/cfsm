@@ -71,13 +71,6 @@ void s1_exit_action(struct cfsm_state * state, int event_id, void *event_data) {
     s1_exit_action_data.event_data = event_data;
 }
 
-void cfsm_start(struct cfsm *fsm, int event_id, void *event_data) {
-    struct cfsm_state * fsm_initial_state = fsm->initial_state;
-    fsm->current_state = fsm_initial_state;
-    fsm_initial_state->entry_action(fsm_initial_state, event_id, event_data);
-    // TODO: cfsm_start should call start over all substates!
-}
-
 /**
  * TEST CASES
  */
@@ -102,13 +95,6 @@ void cfsm_test_start_calls_entry_action_over_initial_state(void) {
     assert(&event_data == s0_entry_action_data.event_data && "no copying of event data");
 }
 
-void cfsm_stop(struct cfsm *fsm, int event_id, void *event_data) {
-    struct cfsm_state * current_state = fsm->current_state;
-    current_state->exit_action(current_state, event_id, event_data);
-    fsm->current_state = nullptr;
-    // TODO: cfsm_stop should call start over all substates!
-}
-
 void cfsm_test_stop_calls_exit_action_over_current_state(void) {
     setup();
 
@@ -128,12 +114,6 @@ void cfsm_test_stop_calls_exit_action_over_current_state(void) {
     assert(&state == s0_exit_action_data.state);
     assert(stop_event_id == s0_exit_action_data.event_id);
     assert(&event_data == s0_exit_action_data.event_data && "no copying of event data");
-}
-
-
-void cfsm_restart(struct cfsm *fsm, int event_id, void *event_data) {
-    cfsm_stop(fsm, event_id, event_data);
-    cfsm_start(fsm, event_id, event_data);
 }
 
 void cfsm_test_restart_calls_exit_action_over_current_state_then_transit_to_initial_state_then_call_entry_action_over_initial_state(void) {
