@@ -78,21 +78,26 @@ void cfsm_transition_set_action(struct cfsm_transition *t, cfsm_action_f action)
     t->action = action;
 }
 
-void cfsm_add_transition(struct cfsm_state *fsm, struct cfsm_transition *t) {
-    // TODO: use container abstraction to keep track on transitions and traverse them efficiently.
-    struct cfsm_transition_list *node = malloc(sizeof(struct cfsm_transition_list));
-    ++t->source->num_transitions;
-    node->next = t->source->transitions;
-    node->transition = t;
-    t->source->transitions = node;
-}
-
 inline bool cfsm_is_started(struct cfsm_state *fsm) {
     return nullptr != fsm->current_state;
 }
 
 inline bool cfsm_is_stopped(struct cfsm_state *fsm) {
     return nullptr == fsm->current_state;
+}
+
+void cfsm_add_transition(struct cfsm_state *fsm, struct cfsm_transition *t) {
+    if (cfsm_is_started(fsm)) {
+        // WARN: modification of already running state machine is prohibited!
+        return;
+    }
+
+    // TODO: use container abstraction to keep track on transitions and traverse them efficiently.
+    struct cfsm_transition_list *node = malloc(sizeof(struct cfsm_transition_list));
+    ++t->source->num_transitions;
+    node->next = t->source->transitions;
+    node->transition = t;
+    t->source->transitions = node;
 }
 
 void cfsm_start(struct cfsm_state *fsm, int event_id, void *event_data) {
