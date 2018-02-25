@@ -4,7 +4,7 @@
 #include "cfsm_test_runner.h"
 
 void cfsm_test_fsm_init(void) {
-    struct cfsm c;
+    struct cfsm_state c;
     cfsm_init(&c, 0, nullptr, nullptr);
 
     assert(0 == c.num_states);
@@ -59,7 +59,7 @@ void cfsm_test_add_single_transition_increment_transition_counter_for_state(void
     struct cfsm_state s;
     cfsm_init_state(&s, "hakuna-matata");
 
-    struct cfsm c;
+    struct cfsm_state c;
     cfsm_init(&c, 1, &s, &s);
 
     assert(1 == c.num_states && "state count should be equal to 1");
@@ -71,8 +71,6 @@ void cfsm_test_add_single_transition_increment_transition_counter_for_state(void
 
     assert(true == cfsm_transition_is_internal(&t) && "transition with source == next is internal transition");
 }
-
-enum cfsm_status cfsm_process_event(struct cfsm *fsm, int event_id, void *event_data);
 
 int main(int argc, char *argv[]) {
     cfsm_test_add("cfsm_test_fsm_init", cfsm_test_fsm_init);

@@ -75,8 +75,6 @@ void s1_exit_action(struct cfsm_state * state, int event_id, void *event_data) {
  * TEST CASES
  */
 void cfsm_test_start_calls_entry_action_over_initial_state(void) {
-    setup();
-
     int initial_event_id = 8;
     int event_data = 523;
 
@@ -84,8 +82,10 @@ void cfsm_test_start_calls_entry_action_over_initial_state(void) {
     cfsm_init_state(&state, "hakuna-matata");
     state.entry_action = s0_entry_action;
 
-    struct cfsm c;
+    struct cfsm_state c;
     cfsm_init(&c, 1, &state, &state);
+
+    setup();
 
     cfsm_start(&c, initial_event_id, &event_data);
 
@@ -96,8 +96,6 @@ void cfsm_test_start_calls_entry_action_over_initial_state(void) {
 }
 
 void cfsm_test_stop_calls_exit_action_over_current_state(void) {
-    setup();
-
     int stop_event_id = 9;
     int event_data = 523;
 
@@ -105,8 +103,11 @@ void cfsm_test_stop_calls_exit_action_over_current_state(void) {
     cfsm_init_state(&state, "hakuna-matata");
     state.exit_action = s0_exit_action;
 
-    struct cfsm c;
+    struct cfsm_state c;
     cfsm_init(&c, 1, &state, &state);
+    cfsm_start(&c, 0, nullptr);
+
+    setup();
 
     cfsm_stop(&c, stop_event_id, &event_data);
 
@@ -117,8 +118,6 @@ void cfsm_test_stop_calls_exit_action_over_current_state(void) {
 }
 
 void cfsm_test_restart_calls_exit_action_over_current_state_then_transit_to_initial_state_then_call_entry_action_over_initial_state(void) {
-    setup();
-
     int restart_event_id = 17;
     int event_data = 635;
 
@@ -127,8 +126,11 @@ void cfsm_test_restart_calls_exit_action_over_current_state_then_transit_to_init
     state.entry_action = s0_entry_action;
     state.exit_action = s0_exit_action;
 
-    struct cfsm c;
+    struct cfsm_state c;
     cfsm_init(&c, 1, &state, &state);
+    cfsm_start(&c, 0, nullptr);
+
+    setup();
 
     cfsm_restart(&c, restart_event_id, &event_data);
 
@@ -162,7 +164,7 @@ void cfsm_test_processing_event_calls_actions_over_endpoint_states(void) {
     struct cfsm_transition t;
     cfsm_init_transition(&t, &states[0], &states[1], event_id);
 
-    struct cfsm c;
+    struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
 
     cfsm_add_transition(&c, &t);

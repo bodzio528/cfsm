@@ -65,7 +65,7 @@ void cfsm_test_process_event_returns_not_ok_if_no_transition_exists(void) {
     cfsm_init_state(&states[0], "hakuna_matata");
     cfsm_init_state(&states[1], "abra-cadabra");
 
-    struct cfsm c;
+    struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
 
     assert(cfsm_status_not_ok == cfsm_process_event(&c, event_id, &event_data) && "processing status is not ok");
@@ -82,7 +82,7 @@ void cfsm_test_process_event_returns_not_ok_if_no_transition_for_event_is_found(
     cfsm_init_state(&states[0], "hakuna_matata");
     cfsm_init_state(&states[1], "abra-cadabra");
 
-    struct cfsm c;
+    struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
 
     struct cfsm_transition t;
@@ -106,7 +106,7 @@ void cfsm_test_process_event_null_guard_means_transition_is_enabled(void) {
     cfsm_init_state(&states[0], "hakuna_matata");
     cfsm_init_state(&states[1], "abra-cadabra");
 
-    struct cfsm c;
+    struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
 
     struct cfsm_transition t;
@@ -130,7 +130,7 @@ void cfsm_test_process_event_returns_status_guard_rejected(void) {
     cfsm_init_state(&states[0], "hakuna_matata");
     cfsm_init_state(&states[1], "abra-cadabra");
 
-    struct cfsm c;
+    struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
 
     struct cfsm_transition t;
@@ -162,7 +162,7 @@ void cfsm_test_process_event_calls_action_when_transition_enabled(void) {
     cfsm_init_state(&states[0], "hakuna_matata");
     cfsm_init_state(&states[1], "abra-cadabra");
 
-    struct cfsm c;
+    struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
 
     struct cfsm_transition t;
@@ -198,7 +198,7 @@ void cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuat
     cfsm_init_state(&states[0], "hakuna_matata");
     cfsm_init_state(&states[1], "abra-cadabra");
 
-    struct cfsm c;
+    struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
 
     struct cfsm_transition t1;
@@ -232,7 +232,7 @@ void cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuat
     cfsm_init_state(&states[1], "abra-cadabra");
     cfsm_init_state(&states[2], "hokus-pokus");
 
-    struct cfsm c;
+    struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
 
     struct cfsm_transition t1;

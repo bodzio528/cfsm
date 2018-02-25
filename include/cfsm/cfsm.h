@@ -22,21 +22,26 @@ struct cfsm_state {
 
     cfsm_state_action_f entry_action;
     cfsm_state_action_f exit_action;
-};
 
-struct cfsm_state *cfsm_init_state(struct cfsm_state *state, const char *name);
-void cfsm_null_state_action(struct cfsm_state * state, int event_id, void *event_data);
-
-
-struct cfsm {
-    struct cfsm_state *initial_state;
-    struct cfsm_state *current_state;
-
+    // sub-fsm
     int num_states;
     struct cfsm_state *states;
+    struct cfsm_state *initial_state;
+    struct cfsm_state *current_state;
 };
 
-struct cfsm *cfsm_init(struct cfsm *fsm, int num_states, struct cfsm_state *states, struct cfsm_state *initial_state);
+/**
+ * install fsm within a state, effectively prepare state to contain substates amd accept process event calls
+ * @param state state to be promoted
+ * @param num_states number of substates
+ * @param states substates array
+ * @param initial_state chosen state from substates array
+ * @return pointer to promoted state, usually the same as input
+ */
+struct cfsm_state *cfsm_init(struct cfsm_state * state, int num_states, struct cfsm_state * states, struct cfsm_state * initial_state);
+struct cfsm_state *cfsm_init_state(struct cfsm_state *state, const char *name);
+
+void cfsm_null_state_action(struct cfsm_state * state, int event_id, void *event_data);
 
 /**
  * CFSM TRANSITION
@@ -62,7 +67,7 @@ struct cfsm_transition {
 bool cfsm_null_guard(struct cfsm_state *source, struct cfsm_state *target, int event_id, void *event_data);
 void cfsm_null_action(struct cfsm_state *source, struct cfsm_state *target, int event_id, void *event_data);
 
-void cfsm_add_transition(struct cfsm *fsm, struct cfsm_transition *t);
+void cfsm_add_transition(struct cfsm_state *fsm, struct cfsm_transition *t);
 
 struct cfsm_transition *cfsm_init_transition(struct cfsm_transition *t, struct cfsm_state *source, struct cfsm_state *target, int event_id);
 struct cfsm_transition *cfsm_init_transition_a(struct cfsm_transition *t, struct cfsm_state *source, struct cfsm_state *target, int event_id, cfsm_action_f action);
@@ -79,11 +84,11 @@ inline bool cfsm_transition_is_internal(struct cfsm_transition * t) {
 /**
  * CFSM EVENT PROCESSING FUNCTIONS
  */
-void cfsm_start(struct cfsm *fsm, int event_id, void *event_data);
+void cfsm_start(struct cfsm_state *fsm, int event_id, void *event_data);
 
-void cfsm_stop(struct cfsm *fsm, int event_id, void *event_data);
+void cfsm_stop(struct cfsm_state *fsm, int event_id, void *event_data);
 
-void cfsm_restart(struct cfsm *fsm, int event_id, void *event_data);
+void cfsm_restart(struct cfsm_state *fsm, int event_id, void *event_data);
 
 enum cfsm_status {
     cfsm_status_ok,
@@ -92,6 +97,6 @@ enum cfsm_status {
     cfsm_status_deffered
 };
 
-enum cfsm_status cfsm_process_event(struct cfsm *fsm, int event_id, void *event_data);
+enum cfsm_status cfsm_process_event(struct cfsm_state *fsm, int event_id, void *event_data);
 
 #endif /* LIBCFSM_CFSM_H */
