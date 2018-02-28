@@ -43,7 +43,7 @@ struct cfsm_state {
 struct cfsm_state *cfsm_init(struct cfsm_state * state, int num_states, struct cfsm_state * states, struct cfsm_state * initial_state);
 struct cfsm_state *cfsm_init_state(struct cfsm_state *state, const char *name);
 
-void cfsm_destroy(struct cfsm_state *fsm);
+void cfsm_state_destroy(struct cfsm_state *fsm);
 
 void cfsm_null_state_action(struct cfsm_state * state, int event_id, void *event_data);
 

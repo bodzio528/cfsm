@@ -32,24 +32,27 @@ struct cfsm_state *cfsm_init_state(struct cfsm_state *state, const char *name) {
     return state;
 }
 
-void cfsm_destroy(struct cfsm_state *fsm) {
-    assert(cfsm_is_stopped(fsm));
+void cfsm_state_destroy(struct cfsm_state *fsm) {
+    if (cfsm_is_started(fsm)) {
+        // ERROR: cfsm must be stopped in order to be destroyed!
+        return;
+    }
 
+    // check for substates to destroy
     if (fsm->states != nullptr && fsm->num_states != 0) {
-        // check for substates to destroy
-
         for (int i = 0; i < fsm->num_states; ++i) {
-            // destroy submachines
-            cfsm_destroy(&fsm->states[i]);
+            cfsm_state_destroy(&fsm->states[i]);
         }
     }
 
-    // destroy current fsm
+    // destroy current fsm. free container but transitions need to be released in place of creation
+    // TODO: utilize concept of container to manage memory allocated for cfsm!
     while (fsm->transitions != nullptr) {
         struct cfsm_transition_list *head = fsm->transitions;
         fsm->transitions = head->next;
-
-        if (head != nullptr);// free(head);
+        if (head != nullptr) {
+            free(head);
+        }
     }
 
     fsm->num_transitions = 0;

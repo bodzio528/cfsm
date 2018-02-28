@@ -13,16 +13,40 @@ pure C implementation of finite state machine
 ### Open Issues
 
     [ ] make substates a reality
-        [ ] this requires struct cfsm and struct cfsm_state become one
+        [x] this requires struct cfsm and struct cfsm_state become one
+        [ ] take recursive approach in process_event
+        [ ] handle history of submachines (discard_on_exit, reset_on_entry, keep_state)
+            [ ] for each machine set the policy independently
+    [ ] advanded trace
+        [ ] install logger handlers
+        [ ] State History Buffer handlers
     [ ] action return codes should be propagated to event_process caller somehow
     [ ] optimisations for internal transitions
     [ ] e-Transitions (the weirdy ones without an event)
-    [ ] handle history of submachines (discard_on_exit, reset_on_entry, keep_state)
-        [ ] preferably for each machine independently
     [ ] print fsm as graphviz description
         [x] state names
+        [ ] state indices
         [ ] action and description generation
             [ ] without custom macro definitions? See Ultimate goals. 
+    [ ] memory management
+        [ ] handle deffered events
+            [ ] use unsorted for deffered events
+            [ ] after transition to new state, get first event that match to any transmission
+            [ ] transition not found leaves event on deffered queue
+            [ ] transition guard_reject removes event from deffered queue
+            [ ] deferred queue is LILO container but with fast forwarding available
+                [ ] this means cfsm searches for event in order of apperance 
+        [ ] define cfsm_process_event as sink for incomming event
+            [ ] perhabs deleter function is required as part of event
+                [ ] should be easy and compatible with std::unique_ptr
+        [ ] use data structure to manage outcomming transitions for state
+            [ ] make it customizable - user should be able to operate on arrays
+            [ ] iterate over all transitions is nice to have
+            [ ] get list of transitions for certain event_id is key feature
+        [ ] use data structure to manage substates (iterating)
+            [ ] make it customizable - user should be able to operate on arrays
+            [ ] iterate over all substates is nice to have
+            [ ] random access to state via pointer or index is key feature 
 
 ### Ultimate goal(s)
 
