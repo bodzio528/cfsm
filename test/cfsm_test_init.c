@@ -3,6 +3,8 @@
 
 #include "cfsm_test_runner.h"
 
+void cfsm_destroy(struct cfsm_state *fsm);
+
 void cfsm_test_fsm_init(void) {
     struct cfsm_state c;
     cfsm_init(&c, 0, nullptr, nullptr);
@@ -108,6 +110,27 @@ void cfsm_test_add_transition_only_to_stopped_cfsm(void) {
     free(u);
 }
 
+void cfsm_test_stopped_cfsm_can_be_destroyed(void) {
+    struct cfsm_state states[2];
+    cfsm_init_state(&states[0], "hakuna");
+    cfsm_init_state(&states[1], "matata");
+
+    struct cfsm_transition *t = cfsm_init_transition(malloc(sizeof(struct cfsm_transition)), &states[0], &states[1], 1);
+    struct cfsm_transition *u = cfsm_init_transition(malloc(sizeof(struct cfsm_transition)), &states[1], &states[0], 2);
+
+    struct cfsm_state c;
+    cfsm_init(&c, 2, states, &states[0]);
+
+    cfsm_add_transition(&c, t);
+    cfsm_add_transition(&c, u);
+
+    cfsm_destroy(&c);
+
+    assert(0 == c.num_transitions && "no accessible transitions after destroy");
+    assert(nullptr == c.transitions && "zero transition count after destroy");
+}
+
+
 int main(int argc, char *argv[]) {
     cfsm_test_add("cfsm_test_fsm_init", cfsm_test_fsm_init);
     cfsm_test_add("cfsm_test_fsm_init_value_check", cfsm_test_fsm_init_value_check);
@@ -117,6 +140,7 @@ int main(int argc, char *argv[]) {
     cfsm_test_add("cfsm_test_add_single_transition_increment_transition_counter_for_state",
                   cfsm_test_add_single_transition_increment_transition_counter_for_state);
     cfsm_test_add("cfsm_test_add_transition_only_to_stopped_cfsm", cfsm_test_add_transition_only_to_stopped_cfsm);
+//    cfsm_test_add("cfsm_test_stopped_cfsm_can_be_destroyed", cfsm_test_stopped_cfsm_can_be_destroyed);
 
 
     cfsm_test_run_all();

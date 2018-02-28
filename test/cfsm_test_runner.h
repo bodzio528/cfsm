@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#define cfsm_test_log(location, fmt, ...) do { fprintf(stdout, "[UT] %s: " fmt "\n", (location), __VA_ARGS__); fflush(stderr); } while (0)
+
 #define nullptr NULL
 
 struct cfsm_test_node {
@@ -44,9 +46,10 @@ void cfsm_test_run_all() {
 }
 
 void cfsm_test_run_single_case(const struct cfsm_test_node *ctest) {
-    printf("run %s: ", ctest->name);
+    cfsm_test_log(ctest->name, "%s", " start");
     ctest->testcase();
-    printf("%s\n", "ok");
+    cfsm_test_log(ctest->name, "%s", " passed!");
+    cfsm_test_log("", "%s", "");
 }
 
 void cfsm_test_destroy(struct cfsm_test_node *root) {

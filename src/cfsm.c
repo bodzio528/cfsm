@@ -1,6 +1,14 @@
 #include <assert.h>
 #include "cfsm/cfsm.h"
 
+static inline bool cfsm_is_started(struct cfsm_state *fsm) {
+    return nullptr != fsm->current_state;
+}
+
+static inline bool cfsm_is_stopped(struct cfsm_state *fsm) {
+    return nullptr == fsm->current_state;
+}
+
 struct cfsm_state *cfsm_init(struct cfsm_state * state, int num_states, struct cfsm_state * states, struct cfsm_state * initial_state) {
     state->num_states = num_states;
     state->states = states;
@@ -22,6 +30,29 @@ struct cfsm_state *cfsm_init_state(struct cfsm_state *state, const char *name) {
     state->initial_state = nullptr;
     state->current_state = nullptr;
     return state;
+}
+
+void cfsm_destroy(struct cfsm_state *fsm) {
+    assert(cfsm_is_stopped(fsm));
+
+    if (fsm->states != nullptr && fsm->num_states != 0) {
+        // check for substates to destroy
+
+        for (int i = 0; i < fsm->num_states; ++i) {
+            // destroy submachines
+            cfsm_destroy(&fsm->states[i]);
+        }
+    }
+
+    // destroy current fsm
+    while (fsm->transitions != nullptr) {
+        struct cfsm_transition_list *head = fsm->transitions;
+        fsm->transitions = head->next;
+
+        if (head != nullptr);// free(head);
+    }
+
+    fsm->num_transitions = 0;
 }
 
 void cfsm_null_state_action(struct cfsm_state * state, int event_id, void *event_data) {
@@ -76,14 +107,6 @@ void cfsm_transition_set_guard(struct cfsm_transition *t, cfsm_guard_f guard) {
 
 void cfsm_transition_set_action(struct cfsm_transition *t, cfsm_action_f action) {
     t->action = action;
-}
-
-inline bool cfsm_is_started(struct cfsm_state *fsm) {
-    return nullptr != fsm->current_state;
-}
-
-inline bool cfsm_is_stopped(struct cfsm_state *fsm) {
-    return nullptr == fsm->current_state;
 }
 
 void cfsm_add_transition(struct cfsm_state *fsm, struct cfsm_transition *t) {

@@ -30,21 +30,31 @@ static void setup() {
     reset_transition_call(&guard_data);
 }
 
-bool guard(struct cfsm_state *origin, struct cfsm_state *next, int event_id, void *event_data) {
+void guard_impl(struct cfsm_state *origin, struct cfsm_state *next, int event_id, void *event_data) {
     guard_data.origin = origin;
     guard_data.next = next;
     guard_data.event_id = event_id;
     guard_data.event_data = event_data;
+
     ++guard_data.count;
+}
+
+bool guard(struct cfsm_state *origin, struct cfsm_state *next, int event_id, void *event_data) {
+    cfsm_test_log(__FUNCTION__, "%s %s(=>)%s [id=%d/guard=true] ", "guard called! ", origin->name, next->name, event_id);
+
+    guard_impl(origin, next, event_id, event_data);
     return true;
 }
 
 bool negative_guard(struct cfsm_state *origin, struct cfsm_state *next, int event_id, void *event_data) {
-    guard(origin, next, event_id, event_data);
+    cfsm_test_log(__FUNCTION__, "%s %s(=>)%s [id=%d/guard=false] ", "guard called! ", origin->name, next->name, event_id);
+
+    guard_impl(origin, next, event_id, event_data);
     return false;
 }
 
 void action(struct cfsm_state *origin, struct cfsm_state *next, int event_id, void *event_data) {
+    cfsm_test_log(__FUNCTION__, "%s %s(=>)%s [id=%d]", "action called! ", origin->name, next->name, event_id);
     action_data.origin = origin;
     action_data.next = next;
     action_data.event_id = event_id;
@@ -62,8 +72,8 @@ void cfsm_test_process_event_returns_not_ok_if_no_transition_exists(void) {
     int event_data = 123;
 
     struct cfsm_state states[2];
-    cfsm_init_state(&states[0], "hakuna_matata");
-    cfsm_init_state(&states[1], "abra-cadabra");
+    cfsm_init_state(&states[0], "state_0");
+    cfsm_init_state(&states[1], "state_1");
 
     struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
@@ -79,8 +89,8 @@ void cfsm_test_process_event_returns_not_ok_if_no_transition_for_event_is_found(
     int event_data = 123;
 
     struct cfsm_state states[2];
-    cfsm_init_state(&states[0], "hakuna_matata");
-    cfsm_init_state(&states[1], "abra-cadabra");
+    cfsm_init_state(&states[0], "state_0");
+    cfsm_init_state(&states[1], "state_1");
 
     struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
@@ -103,8 +113,8 @@ void cfsm_test_process_event_null_guard_means_transition_is_enabled(void) {
     int event_data = 123;
 
     struct cfsm_state states[2];
-    cfsm_init_state(&states[0], "hakuna_matata");
-    cfsm_init_state(&states[1], "abra-cadabra");
+    cfsm_init_state(&states[0], "state_0");
+    cfsm_init_state(&states[1], "state_1");
 
     struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
@@ -127,8 +137,8 @@ void cfsm_test_process_event_returns_status_guard_rejected(void) {
     int event_data = 123;
 
     struct cfsm_state states[2];
-    cfsm_init_state(&states[0], "hakuna_matata");
-    cfsm_init_state(&states[1], "abra-cadabra");
+    cfsm_init_state(&states[0], "state_0");
+    cfsm_init_state(&states[1], "state_1");
 
     struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
@@ -159,8 +169,8 @@ void cfsm_test_process_event_calls_action_when_transition_enabled(void) {
     int event_data = 123;
 
     struct cfsm_state states[2];
-    cfsm_init_state(&states[0], "hakuna_matata");
-    cfsm_init_state(&states[1], "abra-cadabra");
+    cfsm_init_state(&states[0], "state_0");
+    cfsm_init_state(&states[1], "state_1");
 
     struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
@@ -195,8 +205,8 @@ void cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuat
     int event_data = 123;
 
     struct cfsm_state states[2];
-    cfsm_init_state(&states[0], "hakuna_matata");
-    cfsm_init_state(&states[1], "abra-cadabra");
+    cfsm_init_state(&states[0], "state_0");
+    cfsm_init_state(&states[1], "state_1");
 
     struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
@@ -228,8 +238,8 @@ void cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuat
     int event_data = 123;
 
     struct cfsm_state states[3];
-    cfsm_init_state(&states[0], "hakuna_matata");
-    cfsm_init_state(&states[1], "abra-cadabra");
+    cfsm_init_state(&states[0], "state_0");
+    cfsm_init_state(&states[1], "state_1");
     cfsm_init_state(&states[2], "hokus-pokus");
 
     struct cfsm_state c;

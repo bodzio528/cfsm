@@ -36,6 +36,7 @@ void setup() {
 }
 
 void s0_entry_action(struct cfsm_state * state, int event_id, void *event_data) {
+    cfsm_test_log(__FUNCTION__, "%s", "called!");
     ++s0_entry_action_data.call_count;
     s0_entry_action_data.sequence_number = ++call_sequence_number;
 
@@ -45,6 +46,8 @@ void s0_entry_action(struct cfsm_state * state, int event_id, void *event_data) 
 }
 
 void s0_exit_action(struct cfsm_state * state, int event_id, void *event_data) {
+    cfsm_test_log(__FUNCTION__, "%s", "called!");
+
     ++s0_exit_action_data.call_count;
     s0_exit_action_data.sequence_number = ++call_sequence_number;
 
@@ -54,6 +57,7 @@ void s0_exit_action(struct cfsm_state * state, int event_id, void *event_data) {
 }
 
 void s1_entry_action(struct cfsm_state * state, int event_id, void *event_data) {
+    cfsm_test_log(__FUNCTION__, "%s", "called!");
     ++s1_entry_action_data.call_count;
     s1_entry_action_data.sequence_number = ++call_sequence_number;
 
@@ -63,6 +67,7 @@ void s1_entry_action(struct cfsm_state * state, int event_id, void *event_data) 
 }
 
 void s1_exit_action(struct cfsm_state * state, int event_id, void *event_data) {
+    cfsm_test_log(__FUNCTION__, "%s", "called!");
     ++s1_exit_action_data.call_count;
     s1_exit_action_data.sequence_number = ++call_sequence_number;
 
@@ -79,7 +84,7 @@ void cfsm_test_start_calls_entry_action_over_initial_state(void) {
     int event_data = 523;
 
     struct cfsm_state state;
-    cfsm_init_state(&state, "hakuna-matata");
+    cfsm_init_state(&state, "state_0");
     state.entry_action = s0_entry_action;
 
     struct cfsm_state c;
@@ -100,7 +105,7 @@ void cfsm_test_stop_calls_exit_action_over_current_state(void) {
     int event_data = 523;
 
     struct cfsm_state state;
-    cfsm_init_state(&state, "hakuna-matata");
+    cfsm_init_state(&state, "state_0");
     state.exit_action = s0_exit_action;
 
     struct cfsm_state c;
@@ -122,7 +127,7 @@ void cfsm_test_restart_calls_exit_action_over_current_state_then_transit_to_init
     int event_data = 635;
 
     struct cfsm_state state;
-    cfsm_init_state(&state, "hakuna-matata");
+    cfsm_init_state(&state, "state_0");
     state.entry_action = s0_entry_action;
     state.exit_action = s0_exit_action;
 
@@ -155,8 +160,8 @@ void cfsm_test_processing_event_calls_actions_over_endpoint_states(void) {
     int event_data = 135;
 
     struct cfsm_state states[2];
-    cfsm_init_state(&states[0], "hakuna-matata");
-    cfsm_init_state(&states[1], "abra-cadabra");
+    cfsm_init_state(&states[0], "state_0");
+    cfsm_init_state(&states[1], "state_1");
 
     states[0].exit_action = s0_exit_action;
     states[1].entry_action = s1_entry_action;
@@ -166,6 +171,7 @@ void cfsm_test_processing_event_calls_actions_over_endpoint_states(void) {
 
     struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
+    c.current_state = nullptr;
 
     cfsm_add_transition(&c, &t);
 
@@ -191,7 +197,6 @@ int main(int argc, char *argv[]) {
                   cfsm_test_stop_calls_exit_action_over_current_state);
     cfsm_test_add("cfsm_test_restart_calls_exit_action_over_current_state_then_transit_to_initial_state_then_call_entry_action_over_initial_state",
                   cfsm_test_restart_calls_exit_action_over_current_state_then_transit_to_initial_state_then_call_entry_action_over_initial_state);
-
 
     cfsm_test_run_all();
     cfsm_test_destroy(testbench);
