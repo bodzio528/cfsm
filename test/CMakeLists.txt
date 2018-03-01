@@ -1,7 +1,13 @@
 # Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
+# The additional / is important to remove the last character from the path.
+# Note that it does not matter if the OS uses / or \, because we are only
+# saving the path size.
+string(LENGTH "${CMAKE_SOURCE_DIR}/" CFSM_TEST_SOURCE_PATH_LENGTH)
+add_definitions("-DCFSM_TEST_SOURCE_PATH_LENGTH=${CFSM_TEST_SOURCE_PATH_LENGTH}")
+
 set(HEADERS
-    cfsm_test_runner.h
+        cfsm_test/cfsm_test_runner.h
 )
 
 add_executable(cfsm_test_init cfsm_test_init.c ${HEADERS})

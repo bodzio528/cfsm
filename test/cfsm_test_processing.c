@@ -2,10 +2,9 @@
  * Licensed under the MIT License. See LICENSE file in the project root for full license information.
  */
 
-#include <assert.h>
 #include <cfsm/cfsm.h>
 
-#include "cfsm_test_runner.h"
+#include "cfsm_test/cfsm_test_runner.h"
 
 /**
  * TEST FIXTURE
@@ -44,21 +43,21 @@ void guard_impl(struct cfsm_state *origin, struct cfsm_state *next, int event_id
 }
 
 bool guard(struct cfsm_state *origin, struct cfsm_state *next, int event_id, void *event_data) {
-    cfsm_test_log(__FUNCTION__, "%s %s(=>)%s [id=%d/guard=true] ", "guard called! ", origin->name, next->name, event_id);
+    CFSM_TEST_LOG("%s called! %s(=>)%s [id=%d/accepted] ", __FUNCTION__, origin->name, next->name, event_id);
 
     guard_impl(origin, next, event_id, event_data);
     return true;
 }
 
 bool negative_guard(struct cfsm_state *origin, struct cfsm_state *next, int event_id, void *event_data) {
-    cfsm_test_log(__FUNCTION__, "%s %s(=>)%s [id=%d/guard=false] ", "guard called! ", origin->name, next->name, event_id);
+    CFSM_TEST_LOG("%s called! %s(=>)%s [id=%d/rejected] ", __FUNCTION__, origin->name, next->name, event_id);
 
     guard_impl(origin, next, event_id, event_data);
     return false;
 }
 
 void action(struct cfsm_state *origin, struct cfsm_state *next, int event_id, void *event_data) {
-    cfsm_test_log(__FUNCTION__, "%s %s(=>)%s [id=%d]", "action called! ", origin->name, next->name, event_id);
+    CFSM_TEST_LOG("%s called! %s(=>)%s [id=%d]", __FUNCTION__ , origin->name, next->name, event_id);
     action_data.origin = origin;
     action_data.next = next;
     action_data.event_id = event_id;
@@ -82,8 +81,8 @@ void cfsm_test_process_event_returns_not_ok_if_no_transition_exists(void) {
     struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
 
-    assert(cfsm_status_not_ok == cfsm_process_event(&c, event_id, &event_data) && "processing status is not ok");
-    assert(c.current_state == &states[0] && "current state is not allowed to change without transition");
+    CFSM_TEST_ASSERT(cfsm_status_not_ok == cfsm_process_event(&c, event_id, &event_data) && "processing status is not ok");
+    CFSM_TEST_ASSERT(c.current_state == &states[0] && "current state is not allowed to change without transition");
 }
 
 void cfsm_test_process_event_returns_not_ok_if_no_transition_for_event_is_found(void) {
@@ -106,8 +105,8 @@ void cfsm_test_process_event_returns_not_ok_if_no_transition_for_event_is_found(
 
     cfsm_add_transition(&c, &t);
 
-    assert(cfsm_status_not_ok == cfsm_process_event(&c, 335, &event_data) && "processing status is not ok");
-    assert(c.current_state == &states[0] && "current state is not allowed to change without transition");
+    CFSM_TEST_ASSERT(cfsm_status_not_ok == cfsm_process_event(&c, 335, &event_data) && "processing status is not ok");
+    CFSM_TEST_ASSERT(c.current_state == &states[0] && "current state is not allowed to change without transition");
 }
 
 void cfsm_test_process_event_null_guard_means_transition_is_enabled(void) {
@@ -129,9 +128,9 @@ void cfsm_test_process_event_null_guard_means_transition_is_enabled(void) {
 
     cfsm_add_transition(&c, &t);
 
-    assert(cfsm_status_ok == cfsm_process_event(&c, event_id, &event_data) && "processing status is not ok");
-    assert(0 == guard_data.count && "null guard should've never been called!");
-    assert(1 == action_data.count && "action should've been called once");
+    CFSM_TEST_ASSERT(cfsm_status_ok == cfsm_process_event(&c, event_id, &event_data) && "processing status is not ok");
+    CFSM_TEST_ASSERT(0 == guard_data.count && "null guard should've never been called!");
+    CFSM_TEST_ASSERT(1 == action_data.count && "action should've been called once");
 }
 
 void cfsm_test_process_event_returns_status_guard_rejected(void) {
@@ -154,17 +153,18 @@ void cfsm_test_process_event_returns_status_guard_rejected(void) {
 
     cfsm_add_transition(&c, &t);
 
-    assert(cfsm_status_guard_rejected == cfsm_process_event(&c, event_id, &event_data) && "processing status is ok");
-    assert(1 == guard_data.count && "guard should've been called once");
-    assert(&states[0] == guard_data.origin);
-    assert(&states[1] == guard_data.next);
-    assert(event_id == guard_data.event_id);
-    assert(&event_data == guard_data.event_data);
+    CFSM_TEST_ASSERT(cfsm_status_guard_rejected == cfsm_process_event(&c, event_id, &event_data) && "processing status is ok");
+    CFSM_TEST_ASSERT(1 == guard_data.count && "guard should've been called once");
+    CFSM_TEST_ASSERT(&states[0] == guard_data.origin);
+    CFSM_TEST_ASSERT(&states[1] == guard_data.next);
+    CFSM_TEST_ASSERT(event_id == guard_data.event_id);
+    CFSM_TEST_ASSERT(&event_data == guard_data.event_data);
 
-    assert(0 == action_data.count && "action should've been never called!");
+    CFSM_TEST_ASSERT(0 == action_data.count && "action should've been never called!");
 
-    assert(c.current_state == &states[0] && "guard rejected transition should not allow current state to change");
+    CFSM_TEST_ASSERT(c.current_state == &states[0] && "guard rejected transition should not allow current state to change");
 }
+
 
 void cfsm_test_process_event_calls_action_when_transition_enabled(void) {
     setup();
@@ -186,20 +186,21 @@ void cfsm_test_process_event_calls_action_when_transition_enabled(void) {
 
     cfsm_add_transition(&c, &t);
 
-    assert(cfsm_status_ok == cfsm_process_event(&c, event_id, &event_data) && "processing status is ok");
-    assert(1 == guard_data.count && "guard should've been be called once");
-    assert(&states[0] == guard_data.origin);
-    assert(&states[1] == guard_data.next);
-    assert(event_id == guard_data.event_id);
-    assert(&event_data == guard_data.event_data);
+    CFSM_TEST_ASSERT_MSG(cfsm_status_ok == cfsm_process_event(&c, event_id, &event_data), "processing status should be ok");
 
-    assert(1 == action_data.count && "action should've been called once");
-    assert(&states[0] == action_data.origin);
-    assert(&states[1] == action_data.next);
-    assert(event_id == action_data.event_id);
-    assert(&event_data == action_data.event_data);
+    CFSM_TEST_ASSERT_MSG(1 == guard_data.count, "guard should've been be called once");
+    CFSM_TEST_ASSERT(&states[0] == guard_data.origin);
+    CFSM_TEST_ASSERT(&states[1] == guard_data.next);
+    CFSM_TEST_ASSERT(event_id == guard_data.event_id);
+    CFSM_TEST_ASSERT(&event_data == guard_data.event_data);
 
-    assert(c.current_state == &states[1] && "successfull transition leads to state change");
+    CFSM_TEST_ASSERT_MSG(1 == action_data.count, "action should've been called once");
+    CFSM_TEST_ASSERT(&states[0] == action_data.origin);
+    CFSM_TEST_ASSERT(&states[1] == action_data.next);
+    CFSM_TEST_ASSERT(event_id == action_data.event_id);
+    CFSM_TEST_ASSERT(&event_data == action_data.event_data);
+
+    CFSM_TEST_ASSERT_MSG(c.current_state == &states[1], "successfull transition leads to state change");
 }
 
 void cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuation(void) {
@@ -229,10 +230,10 @@ void cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuat
 
     cfsm_add_transition(&c, &t2);
 
-    assert(cfsm_status_guard_rejected == cfsm_process_event(&c, event_id, &event_data) && "processing status is ok");
-    assert(2 == guard_data.count && "guard should've been called twice");
+    CFSM_TEST_ASSERT(cfsm_status_guard_rejected == cfsm_process_event(&c, event_id, &event_data) && "processing status is ok");
+    CFSM_TEST_ASSERT(2 == guard_data.count && "guard should've been called twice");
 
-    assert(0 == action_data.count && "action should've been never called!");
+    CFSM_TEST_ASSERT(0 == action_data.count && "action should've been never called!");
 }
 
 void cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuation_stop_on_first_accept(void) {
@@ -244,7 +245,7 @@ void cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuat
     struct cfsm_state states[3];
     cfsm_init_state(&states[0], "state_0");
     cfsm_init_state(&states[1], "state_1");
-    cfsm_init_state(&states[2], "hokus-pokus");
+    cfsm_init_state(&states[2], "state_2");
 
     struct cfsm_state c;
     cfsm_init(&c, 2, states, &states[0]);
@@ -270,18 +271,20 @@ void cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuat
 
     cfsm_add_transition(&c, &t3);
 
-    assert(cfsm_status_ok == cfsm_process_event(&c, event_id, &event_data) && "processing status is ok");
-    assert(1 < guard_data.count && "guard should've been called more than once!");
+    CFSM_TEST_ASSERT(cfsm_status_ok == cfsm_process_event(&c, event_id, &event_data) && "processing status is ok");
+    CFSM_TEST_ASSERT(1 < guard_data.count && "guard should've been called more than once!");
 
-    assert(1 == action_data.count && "action should've been called exactly once!");
-    assert(&states[0] == action_data.origin);
-    assert(&states[2] == action_data.next);
-    assert(event_id == action_data.event_id);
-    assert(&event_data == action_data.event_data);
+    CFSM_TEST_ASSERT(1 == action_data.count && "action should've been called exactly once!");
+    CFSM_TEST_ASSERT(&states[0] == action_data.origin);
+    CFSM_TEST_ASSERT(&states[2] == action_data.next);
+    CFSM_TEST_ASSERT(event_id == action_data.event_id);
+    CFSM_TEST_ASSERT(&event_data == action_data.event_data);
 }
 
 
 int main(int argc, char *argv[]) {
+    cfsm_test_init(__FILENAME__);
+
     CFSM_TEST_ADD(cfsm_test_process_event_calls_action_when_transition_enabled);
     CFSM_TEST_ADD(cfsm_test_process_event_returns_status_guard_rejected);
     CFSM_TEST_ADD(cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuation);
@@ -291,6 +294,5 @@ int main(int argc, char *argv[]) {
     CFSM_TEST_ADD(cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuation_stop_on_first_accept);
 
     cfsm_test_run_all();
-    cfsm_test_destroy(testbench);
-    return 0;
+    return cfsm_test_destroy();
 }
