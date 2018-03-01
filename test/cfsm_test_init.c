@@ -1,9 +1,11 @@
+/**
+ * Licensed under the MIT License. See LICENSE file in the project root for full license information.
+ */
+
 #include <assert.h>
 #include <cfsm/cfsm.h>
 
 #include "cfsm_test_runner.h"
-
-void cfsm_state_destroy(struct cfsm_state *fsm);
 
 void cfsm_test_fsm_init(void) {
     struct cfsm_state c;
@@ -136,16 +138,14 @@ void cfsm_test_stopped_cfsm_can_be_destroyed(void) {
 
 
 int main(int argc, char *argv[]) {
-    cfsm_test_add("cfsm_test_fsm_init", cfsm_test_fsm_init);
-    cfsm_test_add("cfsm_test_fsm_init_value_check", cfsm_test_fsm_init_value_check);
-    cfsm_test_add("cfsm_test_state_init_static", cfsm_test_state_init_static);
-    cfsm_test_add("cfsm_test_state_init_dynamic", cfsm_test_state_init_dynamic);
-    cfsm_test_add("cfsm_test_init_transition", cfsm_test_init_transition);
-    cfsm_test_add("cfsm_test_add_single_transition_increment_transition_counter_for_state",
-                  cfsm_test_add_single_transition_increment_transition_counter_for_state);
-    cfsm_test_add("cfsm_test_add_transition_only_to_stopped_cfsm", cfsm_test_add_transition_only_to_stopped_cfsm);
-    cfsm_test_add("cfsm_test_stopped_cfsm_can_be_destroyed", cfsm_test_stopped_cfsm_can_be_destroyed);
-
+    CFSM_TEST_ADD(cfsm_test_fsm_init);
+    CFSM_TEST_ADD(cfsm_test_fsm_init_value_check);
+    CFSM_TEST_ADD(cfsm_test_state_init_static);
+    CFSM_TEST_ADD(cfsm_test_state_init_dynamic);
+    CFSM_TEST_ADD(cfsm_test_init_transition);
+    CFSM_TEST_ADD(cfsm_test_add_single_transition_increment_transition_counter_for_state);
+    CFSM_TEST_ADD(cfsm_test_add_transition_only_to_stopped_cfsm);
+    CFSM_TEST_ADD(cfsm_test_stopped_cfsm_can_be_destroyed);
 
     cfsm_test_run_all();
     cfsm_test_destroy(testbench);

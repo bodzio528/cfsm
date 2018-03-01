@@ -1,3 +1,7 @@
+/**
+ * Licensed under the MIT License. See LICENSE file in the project root for full license information.
+ */
+
 #include <cfsm/cfsm.h>
 #include <assert.h>
 
@@ -189,16 +193,13 @@ void cfsm_test_processing_event_calls_actions_over_endpoint_states(void) {
 }
 
 int main(int argc, char *argv[]) {
-    cfsm_test_add("cfsm_test_processing_event_calls_actions_over_endpoint_states",
-                  cfsm_test_processing_event_calls_actions_over_endpoint_states);
-    cfsm_test_add("cfsm_test_start_calls_entry_action_over_initial_state",
-                  cfsm_test_start_calls_entry_action_over_initial_state);
-    cfsm_test_add("cfsm_test_stop_calls_exit_action_over_current_state",
-                  cfsm_test_stop_calls_exit_action_over_current_state);
-    cfsm_test_add("cfsm_test_restart_calls_exit_action_over_current_state_then_transit_to_initial_state_then_call_entry_action_over_initial_state",
-                  cfsm_test_restart_calls_exit_action_over_current_state_then_transit_to_initial_state_then_call_entry_action_over_initial_state);
+    CFSM_TEST_ADD(cfsm_test_processing_event_calls_actions_over_endpoint_states);
+    CFSM_TEST_ADD(cfsm_test_start_calls_entry_action_over_initial_state);
+    CFSM_TEST_ADD(cfsm_test_stop_calls_exit_action_over_current_state);
+    CFSM_TEST_ADD(cfsm_test_restart_calls_exit_action_over_current_state_then_transit_to_initial_state_then_call_entry_action_over_initial_state);
 
     cfsm_test_run_all();
     cfsm_test_destroy(testbench);
+
     return 0;
 }

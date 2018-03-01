@@ -1,3 +1,7 @@
+/**
+ * Licensed under the MIT License. See LICENSE file in the project root for full license information.
+ */
+
 #ifndef LIBCFSM_CFSM_H
 #define LIBCFSM_CFSM_H
 
@@ -74,8 +78,6 @@ void cfsm_null_action(struct cfsm_state *source, struct cfsm_state *target, int 
 void cfsm_add_transition(struct cfsm_state *fsm, struct cfsm_transition *t);
 
 struct cfsm_transition *cfsm_init_transition(struct cfsm_transition *t, struct cfsm_state *source, struct cfsm_state *target, int event_id);
-struct cfsm_transition *cfsm_init_transition_a(struct cfsm_transition *t, struct cfsm_state *source, struct cfsm_state *target, int event_id, cfsm_action_f action);
-struct cfsm_transition *cfsm_init_transition_g(struct cfsm_transition *t, struct cfsm_state *source, struct cfsm_state *target, int event_id, cfsm_guard_f guard);
 struct cfsm_transition *cfsm_init_transition_ag(struct cfsm_transition *t, struct cfsm_state *source, struct cfsm_state *target, int event_id, cfsm_action_f action, cfsm_guard_f guard);
 
 void cfsm_transition_set_action(struct cfsm_transition *t, cfsm_action_f action);

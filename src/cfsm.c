@@ -1,4 +1,7 @@
-#include <assert.h>
+/**
+ * Licensed under the MIT License. See LICENSE file in the project root for full license information.
+ */
+
 #include "cfsm/cfsm.h"
 
 static inline bool cfsm_is_started(struct cfsm_state *fsm) {
@@ -62,7 +65,6 @@ void cfsm_null_state_action(struct cfsm_state * state, int event_id, void *event
     (void)state;
     (void)event_id;
     (void)event_data;
-    return;
 }
 
 void cfsm_null_action(struct cfsm_state *source, struct cfsm_state *target, int event_id, void *event_data) {
@@ -70,7 +72,6 @@ void cfsm_null_action(struct cfsm_state *source, struct cfsm_state *target, int 
     (void)target;
     (void)event_id;
     (void)event_data;
-    return;
 }
 
 bool cfsm_null_guard(struct cfsm_state *source, struct cfsm_state *target, int event_id, void *event_data) {
@@ -83,14 +84,6 @@ bool cfsm_null_guard(struct cfsm_state *source, struct cfsm_state *target, int e
 
 struct cfsm_transition * cfsm_init_transition(struct cfsm_transition * t, struct cfsm_state* source, struct cfsm_state * target, int event_id) {
     return cfsm_init_transition_ag(t, source, target, event_id, cfsm_null_action, cfsm_null_guard);
-}
-
-struct cfsm_transition *cfsm_init_transition_a(struct cfsm_transition *t, struct cfsm_state *source, struct cfsm_state *target, int event_id, cfsm_action_f action) {
-    return cfsm_init_transition_ag(t, source, target, event_id, action, cfsm_null_guard);
-}
-
-struct cfsm_transition *cfsm_init_transition_g(struct cfsm_transition *t, struct cfsm_state *source, struct cfsm_state *target, int event_id, cfsm_guard_f guard) {
-    return cfsm_init_transition_ag(t, source, target, event_id, cfsm_null_action, guard);
 }
 
 struct cfsm_transition *cfsm_init_transition_ag(struct cfsm_transition *t, struct cfsm_state *source, struct cfsm_state *target, int event_id, cfsm_action_f action, cfsm_guard_f guard) {

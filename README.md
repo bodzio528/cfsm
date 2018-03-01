@@ -1,6 +1,9 @@
 # cfsm
 pure C implementation of finite state machine
 
+## License
+Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
 ### Features
 
     [x] create FSM with states and transitions

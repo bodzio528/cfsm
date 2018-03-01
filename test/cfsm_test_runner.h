@@ -1,3 +1,7 @@
+/**
+ * Licensed under the MIT License. See LICENSE file in the project root for full license information.
+ */
+
 #ifndef CFSM_CFSM_TESTRUNNER_H
 #define CFSM_CFSM_TESTRUNNER_H
 
@@ -57,5 +61,7 @@ void cfsm_test_destroy(struct cfsm_test_node *root) {
         cfsm_test_destroy(root->next);
     free(root);
 }
+
+#define CFSM_TEST_ADD(testfunc) cfsm_test_add(#testfunc, testfunc)
 
 #endif //CFSM_CFSM_TESTRUNNER_H

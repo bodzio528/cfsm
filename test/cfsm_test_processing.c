@@ -1,3 +1,7 @@
+/**
+ * Licensed under the MIT License. See LICENSE file in the project root for full license information.
+ */
+
 #include <assert.h>
 #include <cfsm/cfsm.h>
 
@@ -278,20 +282,13 @@ void cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuat
 
 
 int main(int argc, char *argv[]) {
-    cfsm_test_add("cfsm_test_process_event_calls_action_when_transition_enabled",
-                  cfsm_test_process_event_calls_action_when_transition_enabled);
-    cfsm_test_add("cfsm_test_process_event_returns_status_guard_rejected",
-                  cfsm_test_process_event_returns_status_guard_rejected);
-    cfsm_test_add("cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuation",
-                  cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuation);
-    cfsm_test_add("cfsm_test_process_event_returns_not_ok_if_no_transition_exists",
-                  cfsm_test_process_event_returns_not_ok_if_no_transition_exists);
-    cfsm_test_add("cfsm_test_process_event_returns_not_ok_if_no_transition_for_event_is_found",
-                  cfsm_test_process_event_returns_not_ok_if_no_transition_for_event_is_found);
-    cfsm_test_add("cfsm_test_process_event_null_guard_means_transition_is_enabled",
-                  cfsm_test_process_event_null_guard_means_transition_is_enabled);
-    cfsm_test_add("cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuation_stop_on_first_accept",
-                  cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuation_stop_on_first_accept);
+    CFSM_TEST_ADD(cfsm_test_process_event_calls_action_when_transition_enabled);
+    CFSM_TEST_ADD(cfsm_test_process_event_returns_status_guard_rejected);
+    CFSM_TEST_ADD(cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuation);
+    CFSM_TEST_ADD(cfsm_test_process_event_returns_not_ok_if_no_transition_exists);
+    CFSM_TEST_ADD(cfsm_test_process_event_returns_not_ok_if_no_transition_for_event_is_found);
+    CFSM_TEST_ADD(cfsm_test_process_event_null_guard_means_transition_is_enabled);
+    CFSM_TEST_ADD(cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuation_stop_on_first_accept);
 
     cfsm_test_run_all();
     cfsm_test_destroy(testbench);
