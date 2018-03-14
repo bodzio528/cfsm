@@ -1,6 +1,10 @@
-#include <time.h>
+/**
+ * Licensed under the MIT License. See LICENSE file in the project root for full license information.
+ */
 
 #include "cfsm_test_suite.h"
+
+#include <time.h>
 
 inline static unsigned time_seed(void) {
     time_t t;

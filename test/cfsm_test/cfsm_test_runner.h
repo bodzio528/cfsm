@@ -51,4 +51,4 @@ int cfsm_test_run_all();
 #define CFSM_TEST_ASSERT_MSG(condition, message) if (! (condition)) { CFSM_TEST_LOG_FP(stderr, "condition failed: %s", #message); cfsm_test_g_result = cfsm_test_result_failure; }
 #define CFSM_TEST_ASSERT(condition) CFSM_TEST_ASSERT_MSG(condition, #condition)
 
-#endif
+#endif /* CFSM_TEST_RUNNER_H_ */

@@ -105,4 +105,4 @@ enum cfsm_status {
 
 enum cfsm_status cfsm_process_event(struct cfsm_state *fsm, int event_id, void *event_data);
 
-#endif
+#endif /* LIBCFSM_CFSM_H_ */
