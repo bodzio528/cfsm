@@ -4,7 +4,7 @@
 
 #include <cfsm/cfsm.h>
 
-#include "cfsm_test/cfsm_test_runner.h"
+#include "cfsm_test_suite.h"
 
 int call_sequence_number = 0;
 
@@ -194,15 +194,9 @@ void cfsm_test_processing_event_calls_actions_over_endpoint_states(void) {
     CFSM_TEST_ASSERT(&event_data == s1_entry_action_data.event_data && "no copy allowed!");
 }
 
-int main(int argc, char *argv[]) {
-    cfsm_test_init(__FILENAME__);
-
+void cfsm_test_suite_state_actions(void) {
     CFSM_TEST_ADD(cfsm_test_processing_event_calls_actions_over_endpoint_states);
     CFSM_TEST_ADD(cfsm_test_start_calls_entry_action_over_initial_state);
     CFSM_TEST_ADD(cfsm_test_stop_calls_exit_action_over_current_state);
     CFSM_TEST_ADD(cfsm_test_restart_calls_exit_action_over_current_state_then_transit_to_initial_state_then_call_entry_action_over_initial_state);
-
-    cfsm_test_run_all();
-    return cfsm_test_destroy();
-
 }

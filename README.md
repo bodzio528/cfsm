@@ -15,6 +15,9 @@ Licensed under the MIT License. See LICENSE file in the project root for full li
 
 ### Open Issues
 
+    [ ] unittest runner improvements
+        [ ] shuffle testcases
+        [x] detailed summary at end
     [ ] make substates a reality
         [x] this requires struct cfsm and struct cfsm_state become one
         [ ] take recursive approach in process_event

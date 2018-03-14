@@ -2,17 +2,17 @@
  * Licensed under the MIT License. See LICENSE file in the project root for full license information.
  */
 
-#ifndef LIBCFSM_CFSM_H
-#define LIBCFSM_CFSM_H
-
 #pragma once
+
+#ifndef LIBCFSM_CFSM_H_
+#define LIBCFSM_CFSM_H_
 
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-#define nullptr NULL
+#include "cfsm_nullptr.h"
 
 /**
  * CFSM STATE
@@ -105,4 +105,4 @@ enum cfsm_status {
 
 enum cfsm_status cfsm_process_event(struct cfsm_state *fsm, int event_id, void *event_data);
 
-#endif /* LIBCFSM_CFSM_H */
+#endif

@@ -10,14 +10,17 @@ set(HEADERS
         cfsm_test/cfsm_test_runner.h
 )
 
-add_executable(cfsm_test_init cfsm_test_init.c ${HEADERS})
-target_link_libraries(cfsm_test_init cfsm)
-add_test(NAME cfsm_test_init COMMAND cfsm_test_init)
+set(UT_SOURCES
+        cfsm_test_init.c
+        cfsm_test_processing.c
+        cfsm_test_state_actions.c
+        cfsm_test_submachines.c
+)
 
-add_executable(cfsm_test_processing cfsm_test_processing.c)
-target_link_libraries(cfsm_test_processing cfsm)
-add_test(NAME cfsm_test_processing COMMAND cfsm_test_processing)
+set(UT_MAIN
+        cfsm_test_suite.c
+        cfsm_test/cfsm_test_runner.c)
 
-add_executable(cfsm_test_state_actions cfsm_test_state_actions.c)
-target_link_libraries(cfsm_test_state_actions cfsm)
-add_test(NAME cfsm_test_state_actions COMMAND cfsm_test_state_actions)
+add_executable(cfsm_test_suite ${UT_SOURCES} ${UT_MAIN} ${HEADERS})
+target_link_libraries(cfsm_test_suite cfsm)
+add_test(NAME cfsm_test_suite COMMAND cfsm_test_suite)

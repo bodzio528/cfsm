@@ -4,7 +4,7 @@
 
 #include <cfsm/cfsm.h>
 
-#include "cfsm_test/cfsm_test_runner.h"
+#include "cfsm_test_suite.h"
 
 /**
  * TEST FIXTURE
@@ -282,9 +282,7 @@ void cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuat
 }
 
 
-int main(int argc, char *argv[]) {
-    cfsm_test_init(__FILENAME__);
-
+void cfsm_test_suite_processing(void) {
     CFSM_TEST_ADD(cfsm_test_process_event_calls_action_when_transition_enabled);
     CFSM_TEST_ADD(cfsm_test_process_event_returns_status_guard_rejected);
     CFSM_TEST_ADD(cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuation);
@@ -292,7 +290,4 @@ int main(int argc, char *argv[]) {
     CFSM_TEST_ADD(cfsm_test_process_event_returns_not_ok_if_no_transition_for_event_is_found);
     CFSM_TEST_ADD(cfsm_test_process_event_null_guard_means_transition_is_enabled);
     CFSM_TEST_ADD(cfsm_test_process_event_guard_rejected_leads_to_transition_search_continuation_stop_on_first_accept);
-
-    cfsm_test_run_all();
-    return cfsm_test_destroy();
 }

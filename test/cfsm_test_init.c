@@ -4,7 +4,7 @@
 
 #include <cfsm/cfsm.h>
 
-#include "cfsm_test/cfsm_test_runner.h"
+#include "cfsm_test_suite.h"
 
 void cfsm_test_fsm_init(void) {
     struct cfsm_state c;
@@ -136,9 +136,7 @@ void cfsm_test_stopped_cfsm_can_be_destroyed(void) {
 }
 
 
-int main(int argc, char *argv[]) {
-    cfsm_test_init(__FILENAME__);
-
+void cfsm_test_suite_init(void) {
     CFSM_TEST_ADD(cfsm_test_fsm_init);
     CFSM_TEST_ADD(cfsm_test_fsm_init_value_check);
     CFSM_TEST_ADD(cfsm_test_state_init_static);
@@ -147,7 +145,4 @@ int main(int argc, char *argv[]) {
     CFSM_TEST_ADD(cfsm_test_add_single_transition_increment_transition_counter_for_state);
     CFSM_TEST_ADD(cfsm_test_add_transition_only_to_stopped_cfsm);
     CFSM_TEST_ADD(cfsm_test_stopped_cfsm_can_be_destroyed);
-
-    cfsm_test_run_all();
-    return cfsm_test_destroy();
 }

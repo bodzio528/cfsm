@@ -2,6 +2,6 @@
 
 set(CFSM_HEADERS
         ../include/cfsm/cfsm.h
-        )
+        ../include/cfsm/cfsm_nullptr.h)
 
 add_library(cfsm cfsm.c ${CFSM_HEADERS})
