@@ -12,7 +12,7 @@ static inline bool cfsm_is_stopped(struct cfsm_state *fsm) {
     return nullptr == fsm->current_state;
 }
 
-struct cfsm_state *cfsm_init(struct cfsm_state * state, int num_states, struct cfsm_state * states, struct cfsm_state * initial_state) {
+struct cfsm_state *cfsm_init(struct cfsm_state *state, int num_states, struct cfsm_state *states, struct cfsm_state *initial_state) {
     state->num_states = num_states;
     state->states = states;
     state->initial_state = initial_state;
@@ -61,7 +61,7 @@ void cfsm_state_destroy(struct cfsm_state *fsm) {
     fsm->num_transitions = 0;
 }
 
-void cfsm_null_state_action(struct cfsm_state * state, int event_id, void *event_data) {
+void cfsm_null_state_action(struct cfsm_state *state, int event_id, void *event_data) {
     (void)state;
     (void)event_id;
     (void)event_data;
@@ -82,7 +82,7 @@ bool cfsm_null_guard(struct cfsm_state *source, struct cfsm_state *target, int e
     return true;
 }
 
-struct cfsm_transition * cfsm_init_transition(struct cfsm_transition * t, struct cfsm_state* source, struct cfsm_state * target, int event_id) {
+struct cfsm_transition * cfsm_init_transition(struct cfsm_transition *t, struct cfsm_state *source, struct cfsm_state *target, int event_id) {
     return cfsm_init_transition_ag(t, source, target, event_id, cfsm_null_action, cfsm_null_guard);
 }
 
@@ -156,23 +156,28 @@ enum cfsm_status cfsm_process_event(struct cfsm_state *fsm, int event_id, void *
 
     struct cfsm_state *current_state = fsm->current_state; // get current state O(1);
     // find transition from current state on event_id O(s->num_transition)
-    struct cfsm_transition_list *ttt = current_state->transitions;
-    while (nullptr != ttt) {
-        struct cfsm_transition *tt = ttt->transition;
-        if (event_id == tt->event_id) {
-            struct cfsm_transition *t = ttt->transition;
+    struct cfsm_transition_list *transition_node = current_state->transitions;
+    while (nullptr != transition_node) {
+        struct cfsm_transition *t = transition_node->transition;
+
+        if (event_id == t->event_id) {
             if (t->guard(t->source, t->target, event_id, event_data)) {
-                t->source->exit_action(t->source, event_id, event_data);
+                t->source->exit_action(t->source, event_id, event_data); //! FIXME: call exit only if target != source
                 t->action(t->source, t->target, event_id, event_data);
                 fsm->current_state = t->target;
-                t->target->entry_action(t->target, event_id, event_data);
+                t->target->entry_action(t->target, event_id, event_data); //! FIXME: call entry only if target != source
                 return cfsm_status_ok;
             } else {
                 result = cfsm_status_guard_rejected;
             }
         }
-        ttt = ttt->next;
+
+        transition_node = transition_node->next;
     }
 
     return result;
+}
+
+bool cfsm_transition_is_internal(struct cfsm_transition *t) {
+    return t->source == t->target;
 }

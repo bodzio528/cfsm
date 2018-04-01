@@ -1,26 +1,11 @@
-# Licensed under the MIT License. See LICENSE file in the project root for full license information.
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-# The additional / is important to remove the last character from the path.
-# Note that it does not matter if the OS uses / or \, because we are only
-# saving the path size.
-string(LENGTH "${CMAKE_SOURCE_DIR}/" CFSM_TEST_SOURCE_PATH_LENGTH)
-add_definitions("-DCFSM_TEST_SOURCE_PATH_LENGTH=${CFSM_TEST_SOURCE_PATH_LENGTH}")
-
-set(UT_SOURCES
-        cfsm_test_init.c
-        cfsm_test_processing.c
-        cfsm_test_state_actions.c
-        cfsm_test_submachines.c
+set(TEST_SOURCES
+        cfsm_test_init.cpp
+        cfsm_test_processing.cpp
+        cfsm_test_state_actions.cpp
 )
 
-set(UT_FRAMEWORK
-        cfsm_test/cfsm_test_runner.h
-        cfsm_test/cfsm_test_runner.c
-)
-
-set(UT_MAIN
-        cfsm_test_suite.c)
-
-add_executable(cfsm_test_suite ${UT_SOURCES} ${UT_MAIN} ${UT_FRAMEWORK})
-target_link_libraries(cfsm_test_suite cfsm)
-add_test(NAME cfsm_test_suite COMMAND cfsm_test_suite)
+add_executable(cfsm_test_suite_GT ${TEST_SOURCES})
+target_link_libraries(cfsm_test_suite_GT cfsm gmock gmock_main)
+add_test(cfsm_test_suite_GT cfsm_test_suite_GT)
